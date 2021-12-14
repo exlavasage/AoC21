@@ -1,14 +1,14 @@
-use nom::character::complete::{i32 as read_i32, newline};
-use nom::bytes::complete::tag;
-use nom::multi::{separated_list1, many_till};
 use nom::branch::alt;
+use nom::bytes::complete::tag;
+use nom::character::complete::{i32 as read_i32, newline};
+use nom::multi::{many_till, separated_list1};
 use nom::IResult;
 use std::fs;
 
 #[derive(Debug, PartialEq, Clone, Copy)]
-enum Fold{
+enum Fold {
     X(i32),
-    Y(i32)
+    Y(i32),
 }
 
 /********************* Read input *********************/
@@ -33,7 +33,8 @@ fn read_fold(input: &str) -> nom::IResult<&str, Fold> {
     }
 }
 
-fn read(input: &str) -> nom::IResult<&str, (Vec<(i32, i32)>, Vec<Fold>)> {
+type Board = Vec<(i32, i32)>;
+fn read(input: &str) -> nom::IResult<&str, (Board, Vec<Fold>)> {
     let (input, (dots, _)) = many_till(read_dot, newline)(input)?;
     let (input, folds) = separated_list1(newline, read_fold)(input)?;
 
@@ -44,7 +45,7 @@ fn read(input: &str) -> nom::IResult<&str, (Vec<(i32, i32)>, Vec<Fold>)> {
 
 // Assuming fold always happens on halfway point
 fn fold_map(dots: &mut Vec<(i32, i32)>, fold: Fold) {
-    for (_, (x, y)) in dots.iter_mut().enumerate() {
+    for (x, y) in dots.iter_mut() {
         match fold {
             Fold::X(f) => {
                 if *x > f {

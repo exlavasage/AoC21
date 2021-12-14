@@ -13,6 +13,7 @@ enum Direction {
     Down,
 }
 
+/********************* Read input *********************/
 impl FromStr for Direction {
     type Err = ();
     fn from_str(input: &str) -> Result<Direction, Self::Err> {
@@ -26,7 +27,7 @@ impl FromStr for Direction {
 }
 
 fn read_direction(input: &str) -> IResult<&str, Direction> {
-    map_res(alpha1, |s: &str| Direction::from_str(s))(input)
+    map_res(alpha1, Direction::from_str)(input)
 }
 
 #[test]
@@ -58,7 +59,8 @@ fn read(input: &str) -> nom::IResult<&str, Vec<(Direction, i32)>> {
     separated_list1(newline, read_line)(input)
 }
 
-fn follow_path(instructions: &Vec<(Direction, i32)>) -> i32 {
+/********************* Actual work *********************/
+fn follow_path(instructions: &[(Direction, i32)]) -> i32 {
     let mut depth = 0;
     let mut dist = 0;
     for (dir, length) in instructions {
@@ -72,7 +74,7 @@ fn follow_path(instructions: &Vec<(Direction, i32)>) -> i32 {
     depth * dist
 }
 
-fn follow_aim(instructions: &Vec<(Direction, i32)>) -> i32 {
+fn follow_aim(instructions: &[(Direction, i32)]) -> i32 {
     let mut aim = 0;
     let mut depth = 0;
     let mut dist = 0;

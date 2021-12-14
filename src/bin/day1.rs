@@ -1,13 +1,15 @@
-use nom::character::complete::{newline, i32 as read_i32};
+use nom::character::complete::{i32 as read_i32, newline};
 use nom::multi::separated_list1;
 use nom::IResult;
 use std::fs;
 
+/********************* Read input *********************/
 fn read(input: &str) -> IResult<&str, Vec<i32>> {
     separated_list1(newline, read_i32)(input)
 }
 
-fn diff_depths(depths: &Vec<i32>) -> isize {
+/********************* Actual work *********************/
+fn diff_depths(depths: &[i32]) -> isize {
     let mut inc_depths = 0;
     let mut last_depth = None;
     for depth in depths {
@@ -21,12 +23,12 @@ fn diff_depths(depths: &Vec<i32>) -> isize {
     inc_depths
 }
 
-fn diff_windows(depths: &Vec<i32>) -> isize {
+fn diff_windows(depths: &[i32]) -> isize {
     let sl1 = &mut depths[..depths.len() - 3].iter();
     let sl2 = &mut depths[3..].iter();
 
     let mut inc = 0;
-    while let Some(depth1) = sl1.next() {
+    for depth1 in sl1 {
         let depth2 = sl2.next().unwrap();
         if depth1 < depth2 {
             inc += 1;
