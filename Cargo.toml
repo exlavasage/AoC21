@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 nom = "7.1.0"
+hex = "0.4.3"
+num_enum = "0.5.5"
